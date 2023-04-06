@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linkknown.eden.mapper.AppModuleFlowStepMapper">
+
+    <resultMap type="com.linkknown.eden.bean.AppModuleFlowStep" id="AppModuleFlowStepResult">
+        <result property="appId" column="app_id"/>
+        <result property="moduleId" column="module_id"/>
+        <result property="flowId" column="flow_id"/>
+        <result property="stepId" column="step_id"/>
+        <result property="stepPreId" column="step_pre_id"/>
+        <result property="stepName" column="step_name"/>
+        <result property="stepContent" column="step_content"/>
+    </resultMap>
+
+    <sql id="selectAppModuleFlowStepVo">
+        select app_id, module_id, flow_id, step_id, step_pre_id, step_name, step_content from app_module_flow_step
+    </sql>
+
+    <select id="selectAppModuleFlowStepList" parameterType="com.linkknown.eden.bean.AppModuleFlowStep"
+            resultMap="AppModuleFlowStepResult">
+        <include refid="selectAppModuleFlowStepVo"/>
+        <where>
+            <if test="appId != null ">and app_id = #{appId}</if>
+            <if test="moduleId != null ">and module_id = #{moduleId}</if>
+            <if test="flowId != null ">and flow_id = #{flowId}</if>
+            <if test="stepPreId != null ">and step_pre_id = #{stepPreId}</if>
+            <if test="stepName != null  and stepName != ''">and step_name like concat('%', #{stepName}, '%')</if>
+            <if test="stepContent != null  and stepContent != ''">and step_content = #{stepContent}</if>
+        </where>
+    </select>
+
+    <select id="selectAppModuleFlowStepById" parameterType="integer" resultMap="AppModuleFlowStepResult">
+        <include refid="selectAppModuleFlowStepVo"/>
+        where step_id = #{stepId}
+    </select>
+
+    <insert id="insertAppModuleFlowStep" parameterType="com.linkknown.eden.bean.AppModuleFlowStep" useGeneratedKeys="true"
+            keyProperty="stepId">
+        insert into app_module_flow_step
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">app_id,</if>
+            <if test="moduleId != null ">module_id,</if>
+            <if test="flowId != null ">flow_id,</if>
+            <if test="stepPreId != null ">step_pre_id,</if>
+            <if test="stepName != null  and stepName != ''">step_name,</if>
+            <if test="stepContent != null  and stepContent != ''">step_content,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">#{appId},</if>
+            <if test="moduleId != null ">#{moduleId},</if>
+            <if test="flowId != null ">#{flowId},</if>
+            <if test="stepPreId != null ">#{stepPreId},</if>
+            <if test="stepName != null  and stepName != ''">#{stepName},</if>
+            <if test="stepContent != null  and stepContent != ''">#{stepContent},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAppModuleFlowStep" parameterType="com.linkknown.eden.bean.AppModuleFlowStep">
+        update app_module_flow_step
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appId != null ">app_id = #{appId},</if>
+            <if test="moduleId != null ">module_id = #{moduleId},</if>
+            <if test="flowId != null ">flow_id = #{flowId},</if>
+            <if test="stepPreId != null ">step_pre_id = #{stepPreId},</if>
+            <if test="stepName != null  and stepName != ''">step_name = #{stepName},</if>
+            <if test="stepContent != null  and stepContent != ''">step_content = #{stepContent},</if>
+        </trim>
+        where step_id = #{stepId}
+    </update>
+
+    <delete id="deleteAppModuleFlowStepById" parameterType="integer">
+        delete from app_module_flow_step where step_id = #{stepId}
+    </delete>
+
+
+
+</mapper>

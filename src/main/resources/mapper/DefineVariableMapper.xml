@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linkknown.eden.mapper.DefineVariableMapper">
+
+    <resultMap type="com.linkknown.eden.bean.DefineVariable" id="DefineVariableResult">
+        <result property="appId" column="app_id"/>
+        <result property="id" column="id"/>
+        <result property="varName" column="var_name"/>
+        <result property="varValue" column="var_value"/>
+    </resultMap>
+
+    <sql id="selectDefineVariableVo">
+        select app_id, id, var_name, var_value from define_variable
+    </sql>
+
+    <select id="selectDefineVariableList" parameterType="com.linkknown.eden.bean.DefineVariable"
+            resultMap="DefineVariableResult">
+        <include refid="selectDefineVariableVo"/>
+        <where>
+            <if test="appId != null ">and app_id = #{appId}</if>
+            <if test="varName != null  and varName != ''">and var_name like concat('%', #{varName}, '%')</if>
+            <if test="varValue != null  and varValue != ''">and var_value = #{varValue}</if>
+        </where>
+    </select>
+
+    <select id="selectDefineVariableById" parameterType="integer" resultMap="DefineVariableResult">
+        <include refid="selectDefineVariableVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDefineVariable" parameterType="com.linkknown.eden.bean.DefineVariable" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into define_variable
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">app_id,</if>
+            <if test="varName != null  and varName != ''">var_name,</if>
+            <if test="varValue != null  and varValue != ''">var_value,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">#{appId},</if>
+            <if test="varName != null  and varName != ''">#{varName},</if>
+            <if test="varValue != null  and varValue != ''">#{varValue},</if>
+        </trim>
+    </insert>
+
+    <delete id="deleteDefineVariable" parameterType="com.linkknown.eden.bean.DefineVariable">
+        delete from define_variable where app_id = #{appId} and id = #{id}
+    </delete>
+
+    <update id="updateDefineVariable" parameterType="com.linkknown.eden.bean.DefineVariable">
+        update define_variable
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="varName != null  and varName != ''">var_name = #{varName},</if>
+            <if test="varValue != null  and varValue != ''">var_value = #{varValue},</if>
+        </trim>
+        where app_id = #{appId} and id = #{id}
+    </update>
+
+
+</mapper>

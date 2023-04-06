@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linkknown.eden.mapper.AppModuleFlowMapper">
+
+    <resultMap type="com.linkknown.eden.bean.AppModuleFlow" id="AppModuleFlowResult">
+        <result property="appId" column="app_id"/>
+        <result property="moduleId" column="module_id"/>
+        <result property="flowId" column="flow_id"/>
+        <result property="flowName" column="flow_name"/>
+    </resultMap>
+
+    <sql id="selectAppModuleFlowVo">
+        select app_id, module_id, flow_id, flow_name from app_module_flow
+    </sql>
+
+    <select id="selectAppModuleFlowList" parameterType="com.linkknown.eden.bean.AppModuleFlow"
+            resultMap="AppModuleFlowResult">
+        <include refid="selectAppModuleFlowVo"/>
+        <where>
+            <if test="appId != null ">and app_id = #{appId}</if>
+            <if test="moduleId != null ">and module_id = #{moduleId}</if>
+            <if test="flowName != null  and flowName != ''">and flow_name like concat('%', #{flowName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectAppModuleFlowById" parameterType="Integer" resultMap="AppModuleFlowResult">
+        <include refid="selectAppModuleFlowVo"/>
+        where flow_id = #{flowId}
+    </select>
+
+    <insert id="insertAppModuleFlow" parameterType="com.linkknown.eden.bean.AppModuleFlow" useGeneratedKeys="true"
+            keyProperty="flowId">
+        insert into app_module_flow
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">app_id,</if>
+            <if test="moduleId != null ">module_id,</if>
+            <if test="flowName != null  and flowName != ''">flow_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">#{appId},</if>
+            <if test="moduleId != null ">#{moduleId},</if>
+            <if test="flowName != null  and flowName != ''">#{flowName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAppModuleFlow" parameterType="com.linkknown.eden.bean.AppModuleFlow">
+        update app_module_flow
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="flowName != null  and flowName != ''">flow_name = #{flowName},</if>
+        </trim>
+        where app_id = #{appId} and module_id = #{moduleId} and flow_id = #{flowId}
+    </update>
+
+    <delete id="deleteAppModuleFlow" parameterType="com.linkknown.eden.bean.AppModuleFlow">
+        delete from app_module_flow where app_id = #{appId} and module_id = #{moduleId} and flow_id = #{flowId}
+    </delete>
+
+</mapper>

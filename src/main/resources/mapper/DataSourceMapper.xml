@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linkknown.eden.mapper.DataSourceMapper">
+
+    <resultMap type="com.linkknown.eden.bean.DataSource" id="DataSourceResult">
+        <result property="appId" column="app_id"/>
+        <result property="id" column="id"/>
+        <result property="dataSourceName" column="data_source_name"/>
+        <result property="driverClassName" column="driver_class_name"/>
+        <result property="url" column="url"/>
+        <result property="username" column="username"/>
+        <result property="password" column="password"/>
+    </resultMap>
+
+    <sql id="selectDataSourceVo">
+        select app_id, id, data_source_name, driver_class_name, url, username, password from data_source
+    </sql>
+
+    <select id="selectDataSourceList" parameterType="com.linkknown.eden.bean.DataSource" resultMap="DataSourceResult">
+        <include refid="selectDataSourceVo"/>
+        <where>
+            <if test="appId != null ">and app_id = #{appId}</if>
+            <if test="driverClassName != null  and driverClassName != ''">and driver_class_name like concat('%',#{driverClassName}, '%')</if>
+            <if test="dataSourceName != null  and dataSourceName != ''">and data_source_name like concat('%',#{dataSourceName}, '%')</if>
+            <if test="url != null  and url != ''">and url = #{url}</if>
+            <if test="username != null  and username != ''">and username like concat('%', #{username}, '%')</if>
+            <if test="password != null  and password != ''">and password = #{password}</if>
+        </where>
+    </select>
+
+    <select id="selectDataSourceById" parameterType="integer" resultMap="DataSourceResult">
+        <include refid="selectDataSourceVo"/>
+        where id = #{id}
+    </select>
+
+    <insert id="insertDataSource" parameterType="com.linkknown.eden.bean.DataSource" useGeneratedKeys="true"
+            keyProperty="id">
+        insert into data_source
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">app_id,</if>
+            <if test="driverClassName != null  and driverClassName != ''">driver_class_name,</if>
+            <if test="dataSourceName != null  and dataSourceName != ''">data_source_name,</if>
+            <if test="url != null  and url != ''">url,</if>
+            <if test="username != null  and username != ''">username,</if>
+            <if test="password != null  and password != ''">password,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">#{appId},</if>
+            <if test="driverClassName != null  and driverClassName != ''">#{driverClassName},</if>
+            <if test="dataSourceName != null  and dataSourceName != ''">#{dataSourceName},</if>
+            <if test="url != null  and url != ''">#{url},</if>
+            <if test="username != null  and username != ''">#{username},</if>
+            <if test="password != null  and password != ''">#{password},</if>
+        </trim>
+    </insert>
+
+    <update id="updateDataSource" parameterType="com.linkknown.eden.bean.DataSource">
+        update data_source
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="driverClassName != null  and driverClassName != ''">driver_class_name = #{driverClassName},</if>
+            <if test="dataSourceName != null  and dataSourceName != ''">data_source_name = #{dataSourceName},</if>
+            <if test="url != null  and url != ''">url = #{url},</if>
+            <if test="username != null  and username != ''">username = #{username},</if>
+            <if test="password != null  and password != ''">password = #{password},</if>
+        </trim>
+        where app_id = #{appId} and id = #{id}
+    </update>
+
+    <delete id="deleteDataSource" parameterType="com.linkknown.eden.bean.DataSource">
+        delete from data_source where app_id = #{appId} and id = #{id}
+    </delete>
+
+</mapper>

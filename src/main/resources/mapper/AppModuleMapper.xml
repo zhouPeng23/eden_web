@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linkknown.eden.mapper.AppModuleMapper">
+
+    <resultMap type="com.linkknown.eden.bean.AppModule" id="AppModuleResult">
+        <result property="appId" column="app_id"/>
+        <result property="moduleId" column="module_id"/>
+        <result property="moduleName" column="module_name"/>
+    </resultMap>
+
+    <sql id="selectAppModuleVo">
+        select app_id, module_id, module_name from app_module
+    </sql>
+
+    <select id="selectAppModuleList" parameterType="com.linkknown.eden.bean.AppModule" resultMap="AppModuleResult">
+        <include refid="selectAppModuleVo"/>
+        <where>
+            <if test="appId != null ">and app_id = #{appId}</if>
+            <if test="moduleName != null  and moduleName != ''">and module_name like concat('%', #{moduleName}, '%')</if>
+        </where>
+    </select>
+
+    <select id="selectAppModuleById" parameterType="integer" resultMap="AppModuleResult">
+        <include refid="selectAppModuleVo"/>
+        where module_id = #{moduleId}
+    </select>
+
+    <insert id="insertAppModule" parameterType="com.linkknown.eden.bean.AppModule" useGeneratedKeys="true"
+            keyProperty="moduleId">
+        insert into app_module
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">app_id,</if>
+            <if test="moduleName != null  and moduleName != ''">module_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appId != null ">#{appId},</if>
+            <if test="moduleName != null  and moduleName != ''">#{moduleName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateAppModule" parameterType="com.linkknown.eden.bean.AppModule">
+        update app_module
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="moduleName != null  and moduleName != ''">module_name = #{moduleName},</if>
+        </trim>
+        where app_id = #{appId} and module_id = #{moduleId}
+    </update>
+
+    <delete id="deleteAppModule" parameterType="com.linkknown.eden.bean.AppModule">
+        delete from app_module where app_id = #{appId} and module_id = #{moduleId}
+    </delete>
+
+</mapper>

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.linkknown.eden.mapper.AppMapper">
+
+    <resultMap type="com.linkknown.eden.bean.App" id="AppResult">
+        <result property="appId" column="app_id"/>
+        <result property="appName" column="app_name"/>
+        <result property="selectedApp" column="selected_app"/>
+    </resultMap>
+
+    <sql id="selectAppVo">
+        select app_id, app_name, selected_app from app
+    </sql>
+
+    <select id="selectAppList" parameterType="com.linkknown.eden.bean.App" resultMap="AppResult">
+        <include refid="selectAppVo"/>
+        <where>
+            <if test="appName != null  and appName != ''">and app_name like concat('%', #{appName}, '%')</if>
+            <if test="selectedApp != null">and selected_app = #{selectedApp}</if>
+        </where>
+    </select>
+
+    <select id="selectAppById" parameterType="integer" resultMap="AppResult">
+        <include refid="selectAppVo"/>
+        where app_id = #{appId}
+    </select>
+
+    <insert id="insertApp" parameterType="com.linkknown.eden.bean.App" useGeneratedKeys="true" keyProperty="appId">
+        insert into app
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <if test="appName != null  and appName != ''">app_name,</if>
+        </trim>
+        <trim prefix="values (" suffix=")" suffixOverrides=",">
+            <if test="appName != null  and appName != ''">#{appName},</if>
+        </trim>
+    </insert>
+
+    <update id="updateApp" parameterType="com.linkknown.eden.bean.App">
+        update app
+        <trim prefix="SET" suffixOverrides=",">
+            <if test="appName != null  and appName != ''">app_name = #{appName},</if>
+            <if test="selectedApp != null">selected_app = #{selectedApp},</if>
+        </trim>
+        where app_id = #{appId}
+    </update>
+
+    <delete id="deleteAppById" parameterType="integer">
+        delete from app where app_id = #{appId}
+    </delete>
+
+</mapper>
